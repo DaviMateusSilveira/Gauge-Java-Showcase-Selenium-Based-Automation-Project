@@ -16,3 +16,6 @@ A comprehensive automation framework demonstrating modern testing practices with
  
 - **Reports:**
   -Find artifacts under GitHub Actions → Workflow runs
+
+  🧩 Why Gauge?
+Gauge is a test automation framework designed for readability, collaboration, and scalability. It uses a behavior-driven development (BDD) approach, making tests easy to write, understand, and maintain. Here's why Gauge is perfect for this project:
