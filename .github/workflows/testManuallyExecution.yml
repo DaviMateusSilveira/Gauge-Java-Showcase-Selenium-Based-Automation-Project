@@ -1,0 +1,49 @@
+name: Manually - Automation Execution
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment (dev/qa/prod)'
+        required: true
+        default: 'dev'
+        type: choice
+        options: [dev, qa, prod]
+
+jobs:
+  run-specs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v3
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+
+      - name: Install Gauge
+        run: |
+          curl -SsL https://downloads.gauge.org/stable | sh
+          gauge install java
+          gauge install html-report
+
+      - name: Run API and E2E Tests
+        env:
+          ENV: ${{ github.event.inputs.environment }}
+        run: |
+          mvn clean test \
+            -DspecsDir=specs\
+            -Denv=$ENV \
+            -DskipBrowserTests=true
+
+      - name: Upload Manually Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Automation-Gauge-Report
+          path: |
+                reports/
